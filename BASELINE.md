@@ -12,8 +12,11 @@ Anyone with write access to the repository could have uploaded that file, built 
 Nothing ties it to a commit, a workflow run or a build machine. `gh attestation verify`
 finds no attestation for its digest (HTTP 404).
 
-### Module 4 (YYYY-MM-DD)
-<!-- After Lab 4.1: what does a consumer get now that the artifact is attested? -->
+### Module 4 (2026-10-27)
+A consumer can now check, with gh attestation verify, that each file on release v0.3.1 was built by
+.github/workflows/release.yml at tag v0.3.1 in wrightbrained/slsa-sandbox, on a GitHub-hosted runner, from a
+recorded commit, and signed by that workflow. They still cannot tell whether that commit was reviewed, or
+whether another workflow in this repository could produce an equally valid record.
 
 ### Module 10 (YYYY-MM-DD)
 <!-- After Lab 10.1: what does your verification gate now guarantee? -->
