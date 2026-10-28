@@ -18,7 +18,7 @@ the checker reads it. Dates are YYYY-MM-DD.
 - Not After: 2026-10-27 19:25:32 UTC
 
 ## Lab 7.1
-- Bypass list: none. Both rulesets (protect-main-and-release, protect-tags) have an empty bypass list, and current_user_can_bypass is "never". The only admin is wrightbrained, who can't bypass the rules but can edit or delete the rulesets. If that account were compromised, none of the controls would hold.
+- Bypass list: one entry, added in Lab 9.1: the Repository admin role (wrightbrained), in "pull request only" mode. It lets me merge my own pull requests with gh pr merge --admin because I have no second reviewer; it does not allow direct pushes, and every use is marked on the pull request. The repository admin can also edit or delete the rulesets, so if that account were compromised, none of the controls would hold.
 - Rule mapping: block force pushes = continuous history; restrict deletions on main and release = continuous history; require signed commits = identity management; require a pull request = access controls; tag ruleset (restrict updates and deletions) = continuous history for release tags. Reference logging comes from GitHub's own push log, not from a rule.
 - Attack 1 (amend and force push to main): blocked. "Cannot force-push to this branch", plus "Changes must be made through a pull request" and "Commits must have verified signatures".
 - Attack 2 (delete release): blocked. "Cannot delete this branch".
