@@ -10,12 +10,12 @@ the checker reads it. Dates are YYYY-MM-DD.
 - Digest matches subject: yes. shasum -a 256 and the subject entry for the file both give d700207e...c062
 
 ## Lab 5.1
-- Runner Environment: [github-hosted or self-hosted]
-- Source Repository URI: [value]
-- Source Repository Ref: [value]
-- Build Signer URI: [value]
-- Not Before: [timestamp]
-- Not After: [timestamp]
+- Runner Environment: github-hosted
+- Source Repository URI: https://github.com/wrightbrained/slsa-sandbox
+- Source Repository Ref: refs/tags/v0.3.1
+- Build Signer URI: https://github.com/wrightbrained/slsa-sandbox/.github/workflows/release.yml@refs/tags/v0.3.1
+- Not Before: 2026-10-27 19:15:32 UTC
+- Not After: 2026-10-27 19:25:32 UTC
 
 ## Lab 7.1
 - Bypass list: [every entity on the ruleset bypass list, including you, or "none"]
