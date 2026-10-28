@@ -18,7 +18,13 @@ the checker reads it. Dates are YYYY-MM-DD.
 - Not After: 2026-10-27 19:25:32 UTC
 
 ## Lab 7.1
-- Bypass list: [every entity on the ruleset bypass list, including you, or "none"]
+- Bypass list: none. Both rulesets (protect-main-and-release, protect-tags) have an empty bypass list, and current_user_can_bypass is "never". The only admin is wrightbrained, who can't bypass the rules but can edit or delete the rulesets. If that account were compromised, none of the controls would hold.
+- Rule mapping: block force pushes = continuous history; restrict deletions on main and release = continuous history; require signed commits = identity management; require a pull request = access controls; tag ruleset (restrict updates and deletions) = continuous history for release tags. Reference logging comes from GitHub's own push log, not from a rule.
+- Attack 1 (amend and force push to main): blocked. "Cannot force-push to this branch", plus "Changes must be made through a pull request" and "Commits must have verified signatures".
+- Attack 2 (delete release): blocked. "Cannot delete this branch".
+- Attack 3 (direct push to main): blocked. "Changes must be made through a pull request" and "Commits must have verified signatures".
+- Attack 4 (move tag v0.1.0): blocked. "Cannot update this protected ref."
+- Source VSA: none. No source tool (source-tool or gittuf) is set up, so the sandbox is Source Level 0 for the spec's purposes. This gap goes in the Module 14 roadmap.
 
 ## Lab 12.1
 - Choke point: [the last handoff before production]
