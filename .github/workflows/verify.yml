@@ -1,0 +1,31 @@
+name: verify
+on:
+  workflow_call:              # release.yml calls this after every build
+    inputs:
+      tag:
+        required: true
+        type: string
+  workflow_dispatch:          # or run it by hand against any release
+    inputs:
+      tag:
+        description: Release tag to verify
+        required: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      attestations: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ inputs.tag }}   # passed through env, never pasted into the script
+    steps:
+      - name: Download the released files
+        run: gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir release
+      - name: Verify against the policy (10-verification-policy.md)
+        run: |
+          for f in release/hello-service release/hello-service.tar.gz; do
+            gh attestation verify "$f" --repo wrightbrained/slsa-sandbox \
+              --cert-identity-regex '^https://github\.com/wrightbrained/slsa-sandbox/\.github/workflows/build\.yml@refs/tags/v' \
+              --predicate-type https://slsa.dev/provenance/v1
+          done

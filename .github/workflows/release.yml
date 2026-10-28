@@ -10,3 +10,11 @@ jobs:
       attestations: write
       artifact-metadata: write
     uses: ./.github/workflows/build.yml
+  verify:
+    needs: release             # runs after the build, against what was published
+    permissions:
+      contents: read
+      attestations: read
+    uses: ./.github/workflows/verify.yml
+    with:
+      tag: ${{ github.ref_name }}
