@@ -18,8 +18,12 @@ A consumer can now check, with gh attestation verify, that each file on release 
 recorded commit, and signed by that workflow. They still cannot tell whether that commit was reviewed, or
 whether another workflow in this repository could produce an equally valid record.
 
-### Module 10 (YYYY-MM-DD)
-<!-- After Lab 10.1: what does your verification gate now guarantee? -->
+### Module 10 (2026-10-28)
+A consumer can now check that each file on release v0.5.0 was signed by `.github/workflows/build.yml` running from a `v` tag in
+wrightbrained/slsa-sandbox, on a GitHub-hosted runner, and my own pipeline refuses to pass a release unless that is true: the gate
+in verify.yml fails the run otherwise. A file built anywhere else, or signed by any other workflow in this repository (including the
+Lab 6.1 forgery), is refused. They still cannot tell whether the source change was reviewed by a second person (it was not), and the
+guarantee is only as strong as the identity pattern in the policy, which loosens silently if someone edits it.
 
 ## Question 2: Which parts of your build must a consumer take entirely on trust?
 
