@@ -1,0 +1,12 @@
+{
+  "max_age_hours": 168,
+  "verifiers": [
+    {
+      "name": "sandbox VSA workflow (vsa.yml, run from a release tag)",
+      "kind": "github-workflow",
+      "identity_regex": "^https://github\\.com/wrightbrained/slsa-sandbox/\\.github/workflows/vsa\\.yml@refs/tags/v",
+      "verifier_id": "https://github.com/wrightbrained/slsa-sandbox/.github/workflows/vsa.yml",
+      "max_level": 3
+    }
+  ]
+}
