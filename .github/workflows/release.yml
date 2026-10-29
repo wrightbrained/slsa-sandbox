@@ -18,3 +18,12 @@ jobs:
     uses: ./.github/workflows/verify.yml
     with:
       tag: ${{ github.ref_name }}
+  vsa:
+    needs: verify              # only issue a VSA for a release that passed the gate
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    uses: ./.github/workflows/vsa.yml
+    with:
+      tag: ${{ github.ref_name }}

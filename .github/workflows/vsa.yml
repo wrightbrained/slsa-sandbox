@@ -1,0 +1,67 @@
+name: vsa
+on:
+  workflow_call:              # release.yml calls this after the verify gate passes
+    inputs:
+      tag:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to issue a VSA for
+        required: true
+jobs:
+  vsa:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write          # signs as vsa.yml, a different identity from build.yml
+      attestations: write      # stores the VSA next to the provenance
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ inputs.tag }}
+    steps:
+      - name: Download the released files
+        run: gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir release -p hello-service -p hello-service.tar.gz
+      - name: Fetch the policy this VSA applies
+        run: gh api "repos/$GITHUB_REPOSITORY/contents/10-verification-policy.md?ref=$GITHUB_SHA" --jq .content | base64 -d > policy.md
+      - name: Run the Lab 10.1 policy and keep the evidence
+        run: |
+          mkdir -p evidence
+          for f in hello-service hello-service.tar.gz; do
+            gh attestation verify "release/$f" --repo wrightbrained/slsa-sandbox \
+              --cert-identity-regex '^https://github\.com/wrightbrained/slsa-sandbox/\.github/workflows/build\.yml@refs/tags/v' \
+              --predicate-type https://slsa.dev/provenance/v1 \
+              --format json > "evidence/$f.json"
+          done
+      - name: Write the VSA
+        run: |
+          repo_url="https://github.com/$GITHUB_REPOSITORY"
+          : > inputs.jsonl
+          for f in hello-service hello-service.tar.gz; do
+            bundle=$(jq -ec '.[0].attestation.bundle' "evidence/$f.json")
+            bundle_sha=$(printf '%s' "$bundle" | sha256sum | cut -d' ' -f1)
+            file_sha=$(sha256sum "release/$f" | cut -d' ' -f1)
+            jq -nc --arg uri "https://api.github.com/repos/$GITHUB_REPOSITORY/attestations/sha256:$file_sha" \
+              --arg sha "$bundle_sha" '{uri: $uri, digest: {sha256: $sha}}' >> inputs.jsonl
+          done
+          jq -n \
+            --arg id "$repo_url/.github/workflows/vsa.yml" \
+            --arg time "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg resource "$repo_url/releases/tag/$TAG" \
+            --arg policy_uri "$repo_url/blob/$GITHUB_SHA/10-verification-policy.md" \
+            --arg policy_sha "$(sha256sum policy.md | cut -d' ' -f1)" \
+            --slurpfile inputs inputs.jsonl \
+            '{verifier: {id: $id}, timeVerified: $time, resourceUri: $resource,
+              policy: {uri: $policy_uri, digest: {sha256: $policy_sha}},
+              inputAttestations: $inputs, verificationResult: "PASSED",
+              verifiedLevels: ["SLSA_BUILD_LEVEL_3"], slsaVersion: "1.2"}' > vsa.json
+          cat vsa.json
+      - name: Sign and store the VSA
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: |
+            release/hello-service
+            release/hello-service.tar.gz
+          predicate-type: https://slsa.dev/verification_summary/v1
+          predicate-path: vsa.json
