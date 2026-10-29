@@ -7,6 +7,13 @@
       "identity_regex": "^https://github\\.com/wrightbrained/slsa-sandbox/\\.github/workflows/vsa\\.yml@refs/tags/v",
       "verifier_id": "https://github.com/wrightbrained/slsa-sandbox/.github/workflows/vsa.yml",
       "max_level": 3
+    },
+    {
+      "name": "local test key (Lab 11.1 step 6)",
+      "kind": "key",
+      "key": "local-signer.pub",
+      "verifier_id": "https://github.com/wrightbrained/slsa-sandbox/.github/workflows/vsa.yml",
+      "max_level": 1
     }
   ]
 }

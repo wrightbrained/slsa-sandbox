@@ -43,3 +43,8 @@ provenance to compare against.
 
 ### Module 0 (2026-10-27)
 gh 2.103.3, jq 1.8.2, cosign v3.1.4, slsa-verifier not installed (optional).
+
+## VSA freshness limit (Lab 11.1)
+
+### Module 11 (2026-10-29)
+My VSA consumer refuses any VSA older than 168 hours (one week). A week is the longest an old verdict can keep being accepted after I change the policy or stop trusting a signer, and it is long enough that a release does not need re-verifying for every deploy. Revisit this if releases become more or less frequent.
