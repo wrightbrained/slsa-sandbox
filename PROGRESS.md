@@ -27,11 +27,11 @@ the checker reads it. Dates are YYYY-MM-DD.
 - Source VSA: none. No source tool (source-tool or gittuf) is set up, so the sandbox is Source Level 0 for the spec's purposes. This gap goes in the Module 14 roadmap.
 
 ## Lab 12.1
-- Choke point: [the last handoff before production]
-- Coverage: [percentage of deployments that would pass]
-- Coverage measured on: [date]
-- Break-glass exercised on: [date]
-- Break-glass expired on: [date]
-- Outage posture: [fail open or fail closed]
-- Outage alert: [how you find out the verifier is down]
-- Enforcing service: [the one service now enforcing]
+- Choke point: gate/install.sh, the install script for hello-service (the last handoff for a CLI binary shipped on GitHub releases)
+- Coverage: 33% (3 of 9: releases v0.1.0 to v0.6.0 plus two local rebuilds; only v0.4.0, v0.5.0 and v0.6.0 verified)
+- Coverage measured on: 2026-11-02
+- Break-glass exercised on: 2026-11-02
+- Break-glass expired on: 2026-11-02
+- Outage posture: fail closed
+- Outage alert: install.sh prints "ALERT: the verification service is unreachable (GATE-DOWN)", exits nonzero and logs a GATE-DOWN row; read by wrightbrained
+- Enforcing service: hello-service via gate/install.sh (enforce mode since 2026-11-02)
